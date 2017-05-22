@@ -167,7 +167,7 @@ namespace MbientLab.MetaWear.Template
 
                     // NOTE: we call this method async. We therefore do NOT use await here.
                     int freq = (int)samplingFrequency;
-                    log.dumpLogToFile(filename, false, false, freq, "hello");
+                    log.dumpLogToFile(filename, false, false, freq);
 
                     stop_metawear();
 
@@ -192,9 +192,7 @@ namespace MbientLab.MetaWear.Template
             board = mwBoard.cppBoard;
 
             deviceSetupPage = this;
-
-            string path = ApplicationData.Current.LocalFolder.Path;
-            this.pathText.Text = path;
+            
             triggered_gpio_already = false;
 
             this.gyroCheckbox.IsChecked = useGyro;
@@ -468,30 +466,12 @@ namespace MbientLab.MetaWear.Template
             }
             return new Point(x, y);
         }
-
-        private async Task<bool> haveControlFile()
-        {
-            string configFileName = this.driveControlScript.Text;
-            string path = ApplicationData.Current.LocalFolder.Path;
-            String fullPath = path + "\\" + configFileName;
-
-            var item = await ApplicationData.Current.LocalFolder.TryGetItemAsync(configFileName);
-            if(item == null)
-            {
-                info("file '" + configFileName + "' not found. Please copy to " + path);
-            }
-            return item != null;
-        }
+        
 
         /** event handler for when clicking on the start-sampling button.
          */
-        private async void accStart_Click(object sender, RoutedEventArgs e)
+        private void accStart_Click(object sender, RoutedEventArgs e)
         {
-            if (! await haveControlFile())
-            {
-                return;
-            }
-
             if (retrieveSamplingRate())
             {
                 string dir = ApplicationData.Current.LocalFolder.Path;
@@ -539,8 +519,7 @@ namespace MbientLab.MetaWear.Template
             //System.Diagnostics.Debug.WriteLine("write to file: " + filename);
             bool streaming = true;
             int freq = (int)samplingFrequency;
-            String jsonFileName = "hello";
-            await log.dumpLogToFile(filename, true, streaming, freq, jsonFileName);
+            await log.dumpLogToFile(filename, true, streaming, freq);
         }
 
 
@@ -592,7 +571,7 @@ namespace MbientLab.MetaWear.Template
                 mbl_mw_logging_clear_entries(getBoard());
             } catch (Exception e)
             {
-                info("failed to clear log on MetaWear device");
+                info("failed to clear log on MetaWear device: " + e);
             }
             mbl_mw_metawearboard_set_time_for_response(getBoard(), 500);
             setup_device_counters = 0;
@@ -690,10 +669,6 @@ namespace MbientLab.MetaWear.Template
 
         private async void handler_loggingStart(object sender, RoutedEventArgs e)
         {
-            if (! await haveControlFile())
-            {
-                return;
-            }
             if (! retrieveSamplingRate())
             {
                 return;
@@ -722,7 +697,7 @@ namespace MbientLab.MetaWear.Template
                 if (has_drop_of_liquid_on_sensor())
                 {
                     stop_logging();
-                    await DownloadHelpers.download_log(accLogger, gyroLogger, downloadProgressBar, getBoard(), textBox, samplingFrequency, "hello");
+                    await DownloadHelpers.download_log(accLogger, gyroLogger, downloadProgressBar, getBoard(), textBox, samplingFrequency);
                     clicked_logging_stop = true;
                     last_retrieved_gpio_value = false;
 
@@ -742,7 +717,7 @@ namespace MbientLab.MetaWear.Template
             }
             clicked_logging_stop = false;
 
-            await DownloadHelpers.download_log(accLogger, gyroLogger, downloadProgressBar, getBoard(), textBox, samplingFrequency, "hello");
+            await DownloadHelpers.download_log(accLogger, gyroLogger, downloadProgressBar, getBoard(), textBox, samplingFrequency);
             
             stop_logging_signals();
             started_logging = false;

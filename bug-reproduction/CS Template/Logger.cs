@@ -133,7 +133,7 @@ namespace MbientLab.MetaWear.Template
 
         /** dump log to file ignore dupplicate attemps to write the same file.
          */
-        public async Task<bool> dumpLogToFile(String filename, bool all, bool streaming, int freq, String jsonFileName)
+        public async Task<bool> dumpLogToFile(String filename, bool all, bool streaming, int freq)
         {
             await myLock.WaitAsync();
 
@@ -144,13 +144,13 @@ namespace MbientLab.MetaWear.Template
             }
             log_files.Add(filename, filename);
             
-            bool ret2 = await writeMWLogEntries(filename, all, streaming, freq, jsonFileName);
+            bool ret2 = await writeMWLogEntries(filename, all, streaming, freq);
             myLock.Release();
             return ret2;
         }
         
 
-        private async Task<bool> writeMWLogEntries(string filename, bool all, bool streaming, int freq, String jsonFileName)
+        private async Task<bool> writeMWLogEntries(string filename, bool all, bool streaming, int freq)
         { 
             UInt32 numElements = 0;
             try
@@ -164,7 +164,7 @@ namespace MbientLab.MetaWear.Template
 
                 string now = string.Format("{0:yyyy-MM-dd_hh-mm-ss-tt}", DateTime.Now);
 
-                sw.WriteLine("# " + now + (streaming ? ", streaming" : ", logging") + ", freq: " + freq + ", " + jsonFileName);
+                sw.WriteLine("# " + now + (streaming ? ", streaming" : ", logging") + ", freq: " + freq);
                 sw.WriteLine("# time; acc-x; acc-y; axx-z; gyro-x; gyro-y; gyro-z; pos-x; pos-y; puck-x; puck-y; spill;");
 
                 uint read_index = prev(write_index);

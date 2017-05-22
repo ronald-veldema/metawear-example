@@ -152,7 +152,7 @@ namespace MbientLab.MetaWear.Template {
             }
             catch (Exception e)
             {
-                Debug.WriteLine(" exception caught ... ");
+                Debug.WriteLine(" exception caught ... " + e);
             }
         }
     }

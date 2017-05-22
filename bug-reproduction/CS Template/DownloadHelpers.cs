@@ -49,7 +49,7 @@ namespace MbientLab.MetaWear.Template
 
 
 
-        public static async Task<bool> download_log(IntPtr accLogger, IntPtr gyroLogger, ProgressBar downloadProgressBar, IntPtr cppBoard, TextBox textBox, DeviceSetup.SamplingFrequency samplingFrequency, String jsonFileName)
+        public static async Task<bool> download_log(IntPtr accLogger, IntPtr gyroLogger, ProgressBar downloadProgressBar, IntPtr cppBoard, TextBox textBox, DeviceSetup.SamplingFrequency samplingFrequency)
         {
             if (Interlocked.Read(ref finished_download) != 0)
             {
@@ -106,7 +106,7 @@ namespace MbientLab.MetaWear.Template
 
             string filename = "log-" + n + ".csv";
             //System.Diagnostics.Debug.WriteLine("write to file: " + filename);
-            await DeviceSetup.log.dumpLogToFile(filename, true, false, (int)samplingFrequency, jsonFileName);
+            await DeviceSetup.log.dumpLogToFile(filename, true, false, (int)samplingFrequency);
             return true;
         }
     }

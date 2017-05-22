@@ -65,7 +65,6 @@ namespace MbientLab.MetaWear.Template {
     public sealed partial class MainPage : Page
     {
         private static MainPage _mainPage;
-        private Timer timer;
 
         public MainPage()
         {
